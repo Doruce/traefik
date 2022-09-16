@@ -1,0 +1,27 @@
+---
+version: "3.3"
+services:
+  traefik:
+    container_name: traefik_2.8
+    image: "traefik:v2.8"
+    command:
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /opt/traefik/traefik.toml:/traefik.toml
+      - /opt/traefik/traefik_dynamic.toml:/traefik_dynamic.toml
+      - /opt/traefik/acme.json:/acme.json
+    networks:
+      - web
+    restart: unless-stopped
+    labels: 
+      - traefik.enable=true
+
+networks:
+  web:
+    external: true
